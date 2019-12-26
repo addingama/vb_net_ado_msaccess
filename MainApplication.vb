@@ -1,13 +1,27 @@
 ﻿Imports System.Data.OleDb
 
+Module MdlKoneksi
+    Public CONN As OleDbConnection
+    Public CMD As OleDbCommand
+    Public DS As New DataSet
+    Public DA As OleDbDataAdapter
+    Public RD As OleDbDataReader
+    Public lokasiData As String
+
+    Public Sub konek()
+        'Sesuaikan path dengan path di laptop/pc masing-masing
+        Dim dbPath As String = ".\SampleAdoDb.mdb;"
+        lokasiData = "Provider=microsoft.Jet.oledb.4.0;Data Source=" & dbPath & "user id=admin;password=;"
+
+        CONN = New OleDbConnection(lokasiData)
+        If CONN.State = ConnectionState.Closed Then
+            CONN.Open()
+        End If
+    End Sub
+End Module
 
 
 Public Class MainApplication
-
-    'Sesuaikan path dengan path di laptop/pc masing-masing
-    Dim dbPath As String = ".\SampleAdoDb.mdb;"
-    Public connectionString As String = "Provider=microsoft.Jet.oledb.4.0;Data Source=" & dbPath & "user id=admin;password=;"
-
     Public isLoggedIn As Boolean = False
 
 
@@ -17,6 +31,7 @@ Public Class MainApplication
             mn_logout.Available = False
             mn_login_Click(sender, e)
         End If
+
     End Sub
 
     Private Sub mn_quit_Click(sender As Object, e As EventArgs) Handles mn_quit.Click
@@ -43,5 +58,10 @@ Public Class MainApplication
     Private Sub mn_logout_Click(sender As Object, e As EventArgs) Handles mn_logout.Click
         logout_success()
 
+    End Sub
+
+    Private Sub mn_users_Click(sender As Object, e As EventArgs) Handles mn_users.Click
+        UsersForm.MdiParent = Me
+        UsersForm.Show()
     End Sub
 End Class

@@ -1,9 +1,6 @@
 ﻿Imports System.Data.OleDb
 
 Public Class LoginForm
-    Dim cmd As OleDbCommand
-    Dim adapter As OleDbDataAdapter
-    Dim dataset As DataSet = New DataSet()
 
     Private Sub LoginForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
@@ -21,30 +18,18 @@ Public Class LoginForm
             Exit Sub
         End If
 
-        Try
-            Using cnn As New OleDbConnection(MainApplication.connectionString)
-                cnn.Open()
+        konek()
 
-                Dim dbSelect As String = "SELECT * FROM [users] WHERE [username]='" & txt_username.Text & "' AND [password]='" & txt_password.Text & "'"
-                Using cmd As New OleDbCommand(dbSelect, cnn)
+        Dim dbSelect As String = "SELECT count(nama) as jumlah FROM [users] WHERE [username]='" & txt_username.Text & "' AND [password]='" & txt_password.Text & "'"
+        CMD = New OleDb.OleDbCommand(dbSelect, CONN)
 
-                    Dim sdr As OleDbDataReader = cmd.ExecuteReader()
-                    If (sdr.Read() = True) Then
-                        MainApplication.login_success()
-                        Me.Close()
-                    Else
-                        MessageBox.Show("Login Failed", "Error")
-                    End If
-
-                    sdr.Close()
-                End Using
-                cnn.Close()
-                cnn.Dispose()
-            End Using
-
-        Catch ex As Exception
-            MessageBox.Show(ex.Message, "OleDb Exception")
-        End Try
+        Dim jumlah As Int16 = CMD.ExecuteScalar()
+        If (jumlah = 1) Then
+            MainApplication.login_success()
+            Me.Close()
+        Else
+            MessageBox.Show("Login Failed", "Error")
+        End If
 
 
     End Sub
